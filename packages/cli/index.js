@@ -5,7 +5,7 @@ import streamConsumers from 'node:stream/consumers'
 /**
  * Wrapper class for buffers, keeps track of current position -> advances every read
  */
-class AutoAdvancingBuffer {
+class StreamingBuffer {
     
     /** @type {Buffer} */
     _buffer
@@ -28,14 +28,14 @@ class AutoAdvancingBuffer {
     }
     
     /**
-     * Create a new {@link AutoAdvancingBuffer} from a stream
+     * Create a new {@link StreamingBuffer} from a stream
      * 
      * @see {streamConsumers.buffer}
      * @param {Readable} stream
      * @constructor
      */
     static async FromStream(stream) {
-        return new AutoAdvancingBuffer(
+        return new StreamingBuffer(
             await streamConsumers.buffer(stream)
         )
     }
@@ -173,7 +173,7 @@ await readFile(
 async function readFile(filePath) {
     const handle = await fs.open(filePath)
     const stream = handle.createReadStream()
-    const buff=  await AutoAdvancingBuffer.FromStream(stream)
+    const buff=  await StreamingBuffer.FromStream(stream)
 
 
     // RIFF chunk (0x52 0x49 0x46 0x46), resource interchangable file format
@@ -198,7 +198,7 @@ async function readFile(filePath) {
 /**
  * Read a chunk from the buffer
  * 
- * @param {AutoAdvancingBuffer} buff
+ * @param {StreamingBuffer} buff
  */
 function readChunk(buff) {
     // alternative way of chunk handling: read data into array buffer -> have getter functions based acting on that
@@ -237,7 +237,7 @@ function readChunk(buff) {
 /**
  * Read a format chunk from the buffer, position expected to be at the start of the chunk's size
  * 
- * @param {AutoAdvancingBuffer} buff
+ * @param {StreamingBuffer} buff
  * @param {number} chunkSize
  * @returns {{formatCode: number, bitsPerSample: number, speakerPositionMask: number, channels: number, validBits: number, subFormat: number, dataRate: number, sampleRate: number, blockSize: number, extensionSize: number}}
  */
@@ -287,7 +287,7 @@ function readFmtChunk(buff, chunkSize) {
 /**
  * Read a fact chunk from the buffer, position expected to be at the start of the chunk's size
  * 
- * @param {AutoAdvancingBuffer} buff
+ * @param {StreamingBuffer} buff
  * @param {number} chunkSize
  * @return {{samplesPerChannel: (number|number|*)}}
  */
@@ -301,7 +301,7 @@ function readFactChunk(buff, chunkSize) {
 
 /**
  * 
- * @param {AutoAdvancingBuffer} buff
+ * @param {StreamingBuffer} buff
  * @param {number} chunkSize
  */
 function readDataChunk(buff, chunkSize) {
