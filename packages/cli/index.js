@@ -305,6 +305,14 @@ function readFactChunk(buff, chunkSize) {
  * @param {number} chunkSize
  */
 function readDataChunk(buff, chunkSize) {
+    const frames = []
+    const end = buff.position + chunkSize
+    
+    while(buff.position < end) {
+        // assume 2 channels (R + L) for now
+        frames.push([buff.readUInt16LE(), buff.readUInt16LE()])
+    }
+    
     return {
         samples: chunkSize / fmtChunk.content.channels,
         length: chunkSize / fmtChunk.content.dataRate

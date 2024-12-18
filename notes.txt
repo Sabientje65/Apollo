@@ -5,3 +5,4 @@ https://transistorized.net/post/stdal/post15.htm
 https://stackoverflow.com/a/49837704
 https://www.quora.com/How-can-I-plot-the-raw-PCM-in-a-WAV-file-manually-using-a-hex-editor-I-can-view-with-and-a-graphing-paper-I-can-use-to-write-on
 https://en.wikipedia.org/wiki/Two%27s_complement
+http://soundfile.sapp.org/doc/WaveFormat/
